@@ -1,10 +1,40 @@
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
+
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
+import { MongooseModule } from '@nestjs/mongoose';
+
+import { ThrottlerModule, ThrottlerGuard, seconds } from '@nestjs/throttler';
+
+import { CommonModule } from '@common/common.module';
+
+import { ParseMongoIdPipe } from '@common/pipes';
+
+import { HttpExceptionFilter } from '@common/filters';
+
+import { MongooseConfigService } from '@configs';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    // Módulos comunes globales
+    MongooseModule.forRootAsync({ useClass: MongooseConfigService }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          limit: 50,
+          ttl: seconds(60),
+        },
+      ],
+      errorMessage: 'Too many requests, please try again later.',
+    }),
+    CommonModule,
+
+    //Business modules
+  ],
+  providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_PIPE, useClass: ParseMongoIdPipe },
+    { provide: APP_FILTER, useClass: HttpExceptionFilter },
+  ],
 })
 export class AppModule {}

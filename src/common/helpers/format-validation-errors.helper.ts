@@ -1,15 +1,12 @@
 import { ValidationError } from 'class-validator';
 
-interface FormattedValidationError {
-  property: string;
-  errors: string[];
-}
+import { ValidationErrorItem } from '../interfaces/validation-error.interface';
 
 export const getClassValidatorErrors = (
   validationErrors: ValidationError[],
   parentProperty = '',
-): Array<FormattedValidationError> => {
-  const errors: FormattedValidationError[] = [];
+): ValidationErrorItem[] => {
+  const errors: ValidationErrorItem[] = [];
 
   getValidationErrorsRecursively(validationErrors, errors, parentProperty);
 
@@ -18,7 +15,7 @@ export const getClassValidatorErrors = (
 
 const getValidationErrorsRecursively = (
   validationErrors: ValidationError[],
-  errors: FormattedValidationError[],
+  errors: ValidationErrorItem[],
   parentProperty = '',
 ): void => {
   for (const error of validationErrors) {
