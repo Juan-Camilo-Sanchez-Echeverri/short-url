@@ -1,10 +1,12 @@
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ThrottlerModule, ThrottlerGuard, seconds } from '@nestjs/throttler';
+
+import { LoggerMiddleware } from '@common/middlewares';
 
 import { CommonModule } from '@common/common.module';
 
@@ -37,4 +39,8 @@ import { MongooseConfigService } from '@configs';
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('{*splat}');
+  }
+}

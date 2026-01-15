@@ -21,6 +21,7 @@ interface EnvVars {
   DB_URL: string;
 
   ALLOWED_ORIGINS: string[];
+  DISCORD_WEBHOOK_URL: string;
 }
 
 const envSchema = joi
@@ -34,6 +35,7 @@ const envSchema = joi
     DB_URL: joi.string().required(),
 
     ALLOWED_ORIGINS: joi.array().items(joi.string().uri()).required(),
+    DISCORD_WEBHOOK_URL: joi.string().uri().required(),
   })
   .unknown(true);
 
@@ -58,4 +60,5 @@ export const envs = {
   dbUrl: envVars.DB_URL,
 
   allowedOrigins: envVars.ALLOWED_ORIGINS,
+  discordWebhookUrl: envVars.DISCORD_WEBHOOK_URL,
 };
