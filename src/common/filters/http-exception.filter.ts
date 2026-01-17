@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import {
   ExceptionFilter,
@@ -10,16 +10,36 @@ import {
 
 import { ErrorsResponse } from '../responses/errors.response';
 
+import { envs } from '@configs';
+
+import { ExecModes } from '@common/enums';
+
+import { LogService } from '@modules/log/log.service';
+
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: Error | HttpException, host: ArgumentsHost): Response {
+  constructor(private readonly logService: LogService) {}
+
+  async catch(exception: Error, host: ArgumentsHost): Promise<Response> {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
     const status: HttpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const isInternalServerError = Math.floor(status / 100) === 5;
+    const isProdEnvironment = envs.nodeEnv !== ExecModes.LOCAL;
+
+    if (isInternalServerError && isProdEnvironment) {
+      await this.logService.sendDiscordLog(request, status, exception);
+    }
+
+    if (isInternalServerError || !isProdEnvironment) {
+      this.logService.errorLog(exception);
+    }
 
     const exceptionResponse =
       exception instanceof HttpException
