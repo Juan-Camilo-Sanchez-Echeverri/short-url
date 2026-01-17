@@ -28,7 +28,8 @@ export class LogService {
 
     const logger = createLogger({ transports: [fileErrorTransport] });
 
-    const messageLog = `Method: ${req.method}, User Id: ${req?.user?._id}, Time: ${date.toLocaleString()}, Path: ${req.path}, Status: ${res.statusCode}`;
+    const userId = req?.user?._id ? String(req.user._id) : 'N/A';
+    const messageLog = `Method: ${req.method}, User Id: ${userId}, Time: ${date.toLocaleString()}, Path: ${req.path}, Status: ${res.statusCode}`;
 
     logger.info(messageLog);
   }
