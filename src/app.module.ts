@@ -16,6 +16,9 @@ import { HttpExceptionFilter } from '@common/filters';
 
 import { MongooseConfigService } from '@configs';
 
+import { UsersModule } from '@modules/users/users.module';
+import { UrlsModule } from '@modules/urls/urls.module';
+
 @Module({
   imports: [
     // Módulos comunes globales
@@ -32,6 +35,8 @@ import { MongooseConfigService } from '@configs';
     CommonModule,
 
     //Business modules
+    UsersModule,
+    UrlsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },
