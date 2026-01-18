@@ -17,6 +17,7 @@ import { AppModule } from './app.module';
 import { envs, corsConfig } from '@configs';
 
 import { getClassValidatorErrors } from '@common/helpers';
+import { RedirectMiddleware } from '@common/middlewares';
 
 const logger = new ConsoleLogger({ prefix: 'Short URL' });
 
@@ -72,6 +73,9 @@ async function bootstrap(): Promise<void> {
       },
     }),
   );
+
+  const redirectMiddleware = app.get(RedirectMiddleware);
+  app.use(redirectMiddleware.use.bind(redirectMiddleware));
 
   /**
    * Set the global prefix.

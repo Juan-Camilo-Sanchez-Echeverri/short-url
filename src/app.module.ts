@@ -6,7 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { ThrottlerModule, ThrottlerGuard, seconds } from '@nestjs/throttler';
 
-import { LoggerMiddleware } from '@common/middlewares';
+import { LoggerMiddleware, RedirectMiddleware } from '@common/middlewares';
 
 import { CommonModule } from '@common/common.module';
 
@@ -39,6 +39,7 @@ import { UrlsModule } from '@modules/urls/urls.module';
     UrlsModule,
   ],
   providers: [
+    RedirectMiddleware,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_PIPE, useClass: ParseMongoIdPipe },
     { provide: APP_FILTER, useClass: HttpExceptionFilter },

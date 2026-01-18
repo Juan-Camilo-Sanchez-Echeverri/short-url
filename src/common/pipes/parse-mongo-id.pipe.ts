@@ -10,7 +10,9 @@ import { isValidObjectId } from 'mongoose';
 @Injectable()
 export class ParseMongoIdPipe implements PipeTransform {
   transform(value: string, metadata: ArgumentMetadata) {
-    const { type } = metadata;
+    const { type, data } = metadata;
+
+    if (data !== 'id') return value;
 
     if (type === 'param') {
       if (!isValidObjectId(value)) {

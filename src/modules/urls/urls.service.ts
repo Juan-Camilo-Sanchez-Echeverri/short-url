@@ -63,4 +63,15 @@ export class UrlsService implements ICrudService<UrlDocument> {
 
     return url;
   }
+
+  async addVisitHistory(shortId: string): Promise<void> {
+    await this.urlsRepository.findOneAndUpdate(
+      {
+        shortId,
+      },
+      {
+        $push: { visitHistory: { timestamp: new Date() } },
+      },
+    );
+  }
 }

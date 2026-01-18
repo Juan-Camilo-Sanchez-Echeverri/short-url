@@ -19,7 +19,8 @@ export class Url extends BaseSchema {
   @Prop({ required: true })
   redirectUrl: string;
 
-  visitHistory: [{ timestamp: { type: number } }];
+  @Prop({ type: [{ timestamp: Date }], default: [] })
+  visitHistory: { timestamp: Date }[];
 }
 
 export const UrlSchema = SchemaFactory.createForClass(Url);
