@@ -74,4 +74,13 @@ export class UrlsService implements ICrudService<UrlDocument> {
       },
     );
   }
+
+  async getAnalytics(shortId: string) {
+    const url = await this.findOriginalUrl(shortId);
+
+    return {
+      totalClicks: url.visitHistory.length,
+      analytics: url.visitHistory,
+    };
+  }
 }

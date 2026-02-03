@@ -31,6 +31,11 @@ export class UrlsController {
     return await this.urlsService.findPaginate(params);
   }
 
+  @Get('analytics/:shortId')
+  async getAnalytics(@Param('shortId') shortId: string) {
+    return await this.urlsService.getAnalytics(shortId);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.urlsService.findOneById(id);
